@@ -3,26 +3,23 @@ import sys
 import re
 import Utils
 import string
-import Struct
+import Operation
+from Rules import Rules
 
-
-facts = []
-operations = []
-
-
-def create_op(line):
-	for op_main in Struct.MAIN_OPERATOR:
-		print(op_main)
-		index = line.index(op_main)
-		print(index)
-	print("yo")
+rules = Rules()
+SIDE = Utils.Side
 
 def handle_line(line):
 	try :
 		line = line.translate({ord(c): None for c in string.whitespace}).split('#')[0]
-		print("Line cleaned : " + line)
-		if len(line) > 0:
-			create_op(line)
+		print(line)
+		if line and len(line) > 0:
+			if line[0] == '=':
+				rules.set_initials_facts(line)
+			elif line[0] == '?':
+				rules.print_questions(line)
+			else:
+				rules.create_rules(line)
 	except:
 		Utils.end("Erreur parsing.")
 
@@ -36,6 +33,11 @@ def open_file(path):
 		file.close()
 	except:
 		Utils.end("Give me a real file please.")
+	for f in rules.facts:
+		print(f.name, f.value, f.set)
+	for op in rules.operations:
+		if op.side == SIDE.LEFT:
+			op.is_possible_to_make()
 
 
 
