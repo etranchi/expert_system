@@ -1,4 +1,4 @@
-#!/Users/etranchi/.brew/bin/python3
+#!/usr/local/bin/python3
 import sys
 import re
 import Utils
