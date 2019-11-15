@@ -33,11 +33,7 @@ def open_file(path):
 		file.close()
 	except:
 		Utils.end("Give me a real file please.")
-	for f in rules.facts:
-		print(f.name, f.value, f.set)
-	for op in rules.operations:
-		if op.side == SIDE.LEFT:
-			op.is_possible_to_make()
+
 
 
 
