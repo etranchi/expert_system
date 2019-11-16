@@ -7,7 +7,6 @@ import Operation
 from Rules import Rules
 
 rules = Rules()
-SIDE = Utils.Side
 
 def handle_line(line):
 	try :

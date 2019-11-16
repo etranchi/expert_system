@@ -1,5 +1,5 @@
 from collections import namedtuple
- 
+
 OpInfo = namedtuple('OpInfo', 'prec assoc')
 L, R = 'Left Right'.split()
  
@@ -15,19 +15,12 @@ ops = {
  
 NUM, LPAREN, RPAREN = 'NUMBER ( )'.split()
  
- 
 def get_input(inp = None):
-    'Inputs an expression and returns list of (TOKENTYPE, tokenvalue)'
- 
-    if inp is None:
-        inp = input('expression: ')
     tokens = inp.strip().split()
     tokenvals = []
     for token in tokens:
         if token in ops:
             tokenvals.append((token, ops[token]))
-        #elif token in (LPAREN, RPAREN):
-        #    tokenvals.append((token, token))
         else:    
             tokenvals.append((NUM, token))
     return tokenvals
