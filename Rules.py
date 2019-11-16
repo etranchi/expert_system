@@ -63,23 +63,30 @@ class Rules:
     def perform_rpn(self, op):
         twin = op.left + op.right
         if twin in self.hash:
-            return
+            return None
         self.hash.append(twin)
         print("rpn to do before:", op.left)
+        # make rpn
+        # return result
+        return 1
+
 
     def checkFactInConclusion(self, op):
+        res = 0
         inv = 0
-        for i,c in enumerate(op.left):
+        for i ,c in enumerate(op.left):
             if c == '!':
                 inv = 1
             if c.isalpha():
                 t_op = self.findOperations(c)
                 if t_op != None and not t_op.done:
                     self.checkFactInConclusion(t_op)
-                    self.perform_rpn(t_op)
-        
-
-    				
+                    res = self.perform_rpn(t_op)
+                    if not res:
+                        return 
+                    if inv:
+                        res = 1 if not res else 0;
+                    # Set value to Fact Or Operation
 
     def solve(self):
         # solving array of op
