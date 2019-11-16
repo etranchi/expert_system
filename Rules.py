@@ -1,6 +1,6 @@
 from Operation import Fact, Operation
 import Utils
-
+import Parser
 SIDE = Utils.Side
 
 class Rules:
@@ -69,33 +69,14 @@ class Rules:
 	def make_op(self, op):
 		print("making op", op)
 		newop = Operation(op[1], op, self.add_fact_if_not_existing(op[0]), self.add_fact_if_not_existing(op[2]))
-		self.operations.append(newop)
+		# self.operations.append(newop)
 		return newop
 	
 
 	def check_side(self, s, side):
-		print("SIDE ", side, " STRING ", s)
-		groups = self.parse_parentheses(s)
-		tmp_op = []
-		i = 0
-		while i < len(groups):
-			if groups[i] == '!':
-				groups[i + 1] = groups[i] + groups[i + 1]
-			i += 1
-		for g in groups:
-			if type(g) == list:
-				tmp_op.append(self.make_op(g))
-			elif g == '!':
-				pass
-			else:
-				if g in Utils.OPERATOR:
-					tmp_op.append(g)
-				elif g.isalpha:
-					tmp_op.append(self.add_fact_if_not_existing(g))
-
-
-		for op in tmp_op:
-			print(type(op))
+		print(s + "before parsing")
+		calc = Parser.shunting(Parser.get_input(s))
+		print(calc)
 		return None
 		# define if op or fact
 

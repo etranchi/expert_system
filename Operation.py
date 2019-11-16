@@ -30,7 +30,7 @@ class Operation:
 		elif self.operator == "=>":
 			name = "IMP"
 		method = getattr(self, name, lambda: "Error")
-		print("Making operation : " + self.array_op[0] + self.operator + self.array_op[1])
+		print("Making operation : " + self.left + self.operator + self.right)
 		self.result = method()
 		self.solved = True
 

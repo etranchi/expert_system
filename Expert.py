@@ -11,7 +11,6 @@ SIDE = Utils.Side
 
 def handle_line(line):
 	try :
-		line = line.translate({ord(c): None for c in string.whitespace}).split('#')[0]
 		print(line)
 		if line and len(line) > 0:
 			if line[0] == '=':
