@@ -1,4 +1,7 @@
-!A | ( B + C )  + C => E
-B + C => A
+!A|(B + C ) 						+ C => E
+B + (C + D) => A
+F + B => D
+M + K => B
+K + J => F
 =
 ?E

@@ -7,7 +7,7 @@ class Operation:
 		self.left = lhs
 		self.right = rhs
 		self.result = None
-
+		self.done = False
 class Fact:
 	def __init__(self, name, value = 0):
 		self.name = name
