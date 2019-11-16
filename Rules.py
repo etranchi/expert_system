@@ -46,52 +46,56 @@ class Rules:
     def create_fact_if_not_existing(self, name):
         for f in self.facts:
             if f.name == name:
-                return
+                return f
         fact = Fact(name)
-        print("Adding Fact not created : " + fact.name)
+        #print("Adding Fact not created : " + fact.name)
         self.facts.append(fact)
-        return
+        return fact
 
     def findOperations(self, name):
         for op in self.operations:
             if op.right.strip() == name:
-                # faire operation
                 return op
         return None
 
 
-    def perform_rpn(self, op):
+    def perform_rpn(self, op, rpn):
+        op.done = True
         twin = op.left + op.right
         if twin in self.hash:
-            return None
+            return
         self.hash.append(twin)
-        print("rpn to do before:", op.left)
+        print("rpn to do before:", rpn, op.left)
         # make rpn
-        # return result
-        return 1
+        return 
 
 
     def checkFactInConclusion(self, op):
-        res = 0
         inv = 0
+        buff = ""
         for i ,c in enumerate(op.left):
             if c == '!':
                 inv = 1
-            if c.isalpha():
+            elif c.isalpha():
                 t_op = self.findOperations(c)
                 if t_op != None and not t_op.done:
                     self.checkFactInConclusion(t_op)
-                    res = self.perform_rpn(t_op)
-                    if not res:
-                        return 
-                    if inv:
-                        res = 1 if not res else 0;
-                    # Set value to Fact Or Operation
+                fact = self.create_fact_if_not_existing(c)
+                if inv == 1:
+                    res = 1 if not fact.value else 0;
+                    buff += str(res)
+                    inv = 0
+                else:
+                    buff += str(fact.value)
+            else:
+                buff += c
+        op.right = buff
+        self.perform_rpn(op, buff)
 
     def solve(self):
         # solving array of op
         for op in self.operations:
-            self.checkFactInConclusion(op)
-            self.perform_rpn(op)
+            if op.done == False:
+                self.checkFactInConclusion(op)
 
             #
