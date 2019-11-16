@@ -9,31 +9,29 @@ from Rules import Rules
 rules = Rules()
 
 def handle_line(line):
-	try :
-		print(line)
-		if line and len(line) > 0:
-			if line[0] == '=':
-				rules.set_initials_facts(line)
-			elif line[0] == '?':
-				rules.print_questions(line)
-			else:
-				rules.create_rules(line)
-	except:
-		Utils.end("Erreur parsing.")
+    try:
+        print(line)
+        if line and len(line) > 0:
+            if line[0] == '=':
+                rules.set_initials_facts(line)
+            elif line[0] == '?':
+                rules.print_questions(line)
+            else:
+                rules.create_rules(line)
+    except:
+        Utils.end("Erreur parsing.")
 
 
 def open_file(path):
-	try:
-		file = open(path)
-		for line in file:
-			handle_line(line)
-		print("I got everything needed.")
-		file.close()
-	except:
-		Utils.end("Give me a real file please.")
-
-
-
+    try:
+        file = open(path)
+        for line in file:
+            handle_line(line)
+        print("I got everything needed.")
+        file.close()
+    except:
+        Utils.end("Give me a real file please.")
+    rules.solve()
 
 
 if __name__ == '__main__':
