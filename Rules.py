@@ -30,6 +30,7 @@ class Rules:
 
 	def create_operation(self, array_string):
 		op = Operation(array_string[0], array_string[1])
+		print(op.left)
 		self.operations.append(op)
 		print(Parser.shunting(Parser.get_input(array_string[0])))
 
