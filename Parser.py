@@ -16,7 +16,7 @@ ops = {
 NUM, LPAREN, RPAREN = 'NUMBER ( )'.split()
  
 def get_input(inp = None):
-    tokens = inp.strip().split()
+    tokens = inp.split()
     tokenvals = []
     for token in tokens:
         if token in ops:
@@ -28,12 +28,12 @@ def get_input(inp = None):
 def shunting(tokenvals):
     outq, stack = [], []
     table = []
+    tokenvals = get_input(tokenvals)
     for token, val in tokenvals:
         if token is NUM:
             outq.append(val)
         elif token in ops:
             t1, (p1, a1) = token, val
-            v = t1
             while stack:
                 t2, (p2, a2) = stack[-1]
                 a2 = a2
@@ -51,19 +51,13 @@ def shunting(tokenvals):
                         else:    
                             stack.pop()
                             break
-                    v = note = ''
                 else:
-                    note = ''
                     break
-                note = '' 
-            note = '' 
             if t1 != RPAREN:
                 stack.append((token, val))
     while stack:
-        v = ''
         t2, (p2, a2) = stack[-1]
         stack.pop()
         outq.append(t2)
-        table.append( (v,' '.join(outq), ' '.join(s[0] for s in stack), note) )
-        v = note = ''
-    return table[-1][1]
+        table.append( (' '.join(outq), ' '.join(s[0] for s in stack)) )
+    return table[-1][0]

@@ -1,6 +1,6 @@
 #!/Users/etranchi/.brew/bin/python3
 
-MAIN_OPERATOR = ["=>"]
+MAIN_OPERATOR = "=>"
 OPERATOR = ["^", "|", "+"]
 
 def end(reason):
