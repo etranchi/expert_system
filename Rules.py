@@ -1,12 +1,14 @@
 from Operation import Fact, Operation
 import Utils
 import Parser
+import sys 
 
 class Rules:
     def __init__(self):
         self.operations = []
         self.facts = []
         self.hash = []
+        self.question = ""
 
     def set_initials_facts(self, string):
         print("Setting facts : " + string)
@@ -16,12 +18,18 @@ class Rules:
                     f.value = 1
                     print("Fact set : " + f.name)
 
-    def print_questions(self, string):
-        print("Setting questions : " + string)
-        for c in string:
+    def print_all_facts(self):
+        for f in self.facts:
+            print(str(f.name) + " - " + str(f.value > 0))
+
+    def set_question(self, string):
+        self.question = string
+
+    def print_answer(self):
+        for c in self.question:
             for f in self.facts:
                 if c == f.name :
-                    print(f.name + " : ", f.value)
+                    print(f.name + " : ", f.value > 0)
 
     def create_rules(self, string):
         # splitting expression : array[0] => array[1]
@@ -33,31 +41,81 @@ class Rules:
             self.create_operation(string.split(Utils.MAIN_OPERATOR))
 
     def create_operation(self, array_string):
-
         s1 = array_string[0].strip().replace("", " ")
-        s1 = Parser.shunting(s1)
-        s2 = array_string[1].replace("", " ")
+        if len(s1) > 5:
+            s1 = Parser.shunting(s1).replace(" ", "")
+        else :
+            s1 = s1.replace(" ","")
+        s2 = array_string[1].strip().replace("", " ")
+        if len(s2) > 5:
+            s2 = Parser.shunting(s2).replace(" ", "")
+        else:
+            s2 = s2.replace(" ", "")
         ## NEED TO CHECK IF S2 NEED SHUNTING
-        s1 = s1.replace(" ", "")
-        s2 = s2.replace(" ", "")
+
+
         op = Operation(s1, s2)
         self.operations.append(op)
+
+    def get_fact(self, name):
+        for f in self.facts:
+            if f.name == name:
+                return f
+        return None
 
     def create_fact_if_not_existing(self, name):
         for f in self.facts:
             if f.name == name:
                 return f
         fact = Fact(name)
-        #print("Adding Fact not created : " + fact.name)
+        print(name)
         self.facts.append(fact)
         return fact
 
     def findOperations(self, name):
+        buff = []
         for op in self.operations:
-            if op.right.strip() == name:
-                return op
-        return None
+            operation = op.right.strip()
+            for c in operation:
+                if c == name:
+                    buff.append(op)
+        return buff
 
+    def addValueToConclusion(self, op, res):
+        # check if fact or op
+        # if fact
+        if len(op.right) > 2:
+            # handle op
+            i = 0
+            buff = []
+            rpn = list(op.right)
+            while i < len(rpn):
+                if rpn[i] in Utils.OPERATOR:
+                    print(buff)
+                    right, left = self.get_fact(buff.pop()), self.get_fact(buff.pop())
+                    print("aa", left.name, right.name)
+                    if rpn[i] == "+":
+                        if left:
+                            left.value += res
+                            print("Setting Fact " + left.name + " : " + str(left.value))
+                        if right:
+                            right.value += res
+                            print("Setting Fact " + right.name + " : " + str(right.value))
+                    else :
+                        Utils.end("Error operator in conclusion")
+                    rpn = rpn[:i - 1] + rpn[i + 1:]
+                    i = 0
+                else :
+                    buff.append(rpn[i])
+                    i += 1
+        else :
+            for c in op.right:
+                if c == "!":
+                    res = not res
+                fact = self.get_fact(c)
+                if fact:
+                    fact.value += res
+                    print("Fact " + fact.name + " set to " + str(res) + " from rule : " + op.left + " => " + op.right)
 
     def perform_rpn(self, op, rpn):
         op.done = True
@@ -65,31 +123,50 @@ class Rules:
         if twin in self.hash:
             return
         self.hash.append(twin)
-        print("rpn to do before:", rpn, op.left)
-        # make rpn
-        return 
+        i = 0
+        buff = []
+        rpn = list(rpn)
+        print(rpn)
+        while i < len(rpn):
+            if rpn[i] in Utils.OPERATOR:                
+                left, right = buff.pop(), buff.pop()
+                if rpn[i] == "+":
+                    res = left and right
+                elif rpn[i] == "|":
+                    res = left or right
+                elif rpn[i] == "^":
+                    res = left ^ right
+                buff.append(res)
+                rpn[i - 2] = res
+                rpn = rpn[:i - 1] + rpn[i + 1:]
+                i = 0
+            else :
+                buff.append(int(rpn[i]))
+                i += 1
+        self.addValueToConclusion(op, buff[-1])
+        return
 
 
     def checkFactInConclusion(self, op):
         inv = 0
         buff = ""
-        for i ,c in enumerate(op.left):
+        for c in op.left:
             if c == '!':
                 inv = 1
             elif c.isalpha():
-                t_op = self.findOperations(c)
-                if t_op != None and not t_op.done:
-                    self.checkFactInConclusion(t_op)
+                a_op = self.findOperations(c)
+                for o in a_op:
+                    if o and not o.done:
+                        self.checkFactInConclusion(o)
                 fact = self.create_fact_if_not_existing(c)
                 if inv == 1:
-                    res = 1 if not fact.value else 0;
+                    res = 1 if not fact.value else 0
                     buff += str(res)
                     inv = 0
                 else:
                     buff += str(fact.value)
             else:
                 buff += c
-        op.right = buff
         self.perform_rpn(op, buff)
 
     def solve(self):

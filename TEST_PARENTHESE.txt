@@ -1,7 +1,6 @@
-!A | (B + C ) + C => E
-B + (C + D) => A
-F + B => D
-M + K => B
-K + J => F
-=M
-?M
+A | B + C => E
+(F | G) + H => E
+
+=GA
+
+?E

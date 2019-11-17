@@ -10,12 +10,12 @@ rules = Rules()
 
 def handle_line(line):
     try:
-        print(line)
+        line = line.strip()
         if line and len(line) > 0:
             if line[0] == '=':
                 rules.set_initials_facts(line)
             elif line[0] == '?':
-                rules.print_questions(line)
+                rules.set_question(line)
             else:
                 rules.create_rules(line)
     except:
@@ -32,6 +32,7 @@ def open_file(path):
     except:
         Utils.end("Give me a real file please.")
     rules.solve()
+    rules.print_answer()
 
 
 if __name__ == '__main__':
