@@ -14,7 +14,7 @@ class Rules:
         print("Setting facts : " + string)
         for c in string:
             for f in self.facts:
-                 if c == f.name :
+                if c == f.name:
                     f.value = 1
                     print("Fact set : " + f.name)
 
@@ -41,6 +41,7 @@ class Rules:
             self.create_operation(string.split(Utils.MAIN_OPERATOR))
 
     def create_operation(self, array_string):
+        print("CHECK ", array_string)
         s1 = array_string[0].strip().replace("", " ")
         if len(s1) > 5:
             s1 = Parser.shunting(s1).replace(" ", "")
@@ -51,9 +52,6 @@ class Rules:
             s2 = Parser.shunting(s2).replace(" ", "")
         else:
             s2 = s2.replace(" ", "")
-        ## NEED TO CHECK IF S2 NEED SHUNTING
-
-
         op = Operation(s1, s2)
         self.operations.append(op)
 
@@ -84,38 +82,17 @@ class Rules:
     def addValueToConclusion(self, op, res):
         # check if fact or op
         # if fact
-        if len(op.right) > 2:
-            # handle op
-            i = 0
-            buff = []
-            rpn = list(op.right)
-            while i < len(rpn):
-                if rpn[i] in Utils.OPERATOR:
-                    print(buff)
-                    right, left = self.get_fact(buff.pop()), self.get_fact(buff.pop())
-                    print("aa", left.name, right.name)
-                    if rpn[i] == "+":
-                        if left:
-                            left.value += res
-                            print("Setting Fact " + left.name + " : " + str(left.value))
-                        if right:
-                            right.value += res
-                            print("Setting Fact " + right.name + " : " + str(right.value))
-                    else :
-                        Utils.end("Error operator in conclusion")
-                    rpn = rpn[:i - 1] + rpn[i + 1:]
-                    i = 0
-                else :
-                    buff.append(rpn[i])
-                    i += 1
-        else :
-            for c in op.right:
-                if c == "!":
-                    res = not res
+        t_res = res
+        for c in op.right:
+            if c == "!":
+                t_res = 1 if not res else 0
+            elif c.isalpha():
                 fact = self.get_fact(c)
                 if fact:
-                    fact.value += res
-                    print("Fact " + fact.name + " set to " + str(res) + " from rule : " + op.left + " => " + op.right)
+                    fact.value += t_res
+                    print("Fact " + fact.name + " set to " + str(fact.value) + " from rule : " + op.left + " => " + op.right)
+                    t_res = res
+                    
 
     def perform_rpn(self, op, rpn):
         op.done = True
@@ -136,20 +113,20 @@ class Rules:
                     res = left or right
                 elif rpn[i] == "^":
                     res = left ^ right
-                buff.append(res)
                 rpn[i - 2] = res
                 rpn = rpn[:i - 1] + rpn[i + 1:]
                 i = 0
             else :
                 buff.append(int(rpn[i]))
                 i += 1
-        self.addValueToConclusion(op, buff[-1])
+        self.addValueToConclusion(op, buff[0])
         return
 
 
     def checkFactInConclusion(self, op):
         inv = 0
         buff = ""
+        op.done = True
         for c in op.left:
             if c == '!':
                 inv = 1
