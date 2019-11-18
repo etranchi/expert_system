@@ -1,5 +1,5 @@
 from collections import namedtuple
-
+import Utils 
 OpInfo = namedtuple('OpInfo', 'prec assoc')
 L, R = 'Left Right'.split()
  
@@ -18,7 +18,14 @@ NUM, LPAREN, RPAREN = 'NUMBER ( )'.split()
 def get_input(inp = None):
     tokens = inp.split()
     tokenvals = []
-    for token in tokens:
+    print(tokens)
+    for i, token in enumerate(tokens):
+        tmp = list(tokenvals)
+        if len(tmp) > 0:
+            if token == '!':
+                if tokens[i + 1] in ops:
+                    Utils.end("Error !")
+                    return
         if token in ops:
             tokenvals.append((token, ops[token]))
         else:    
@@ -29,6 +36,8 @@ def shunting(tokenvals):
     outq, stack = [], []
     table = []
     tokenvals = get_input(tokenvals)
+    i = 0
+    print("yooo")
     for token, val in tokenvals:
         if token is NUM:
             outq.append(val)
@@ -55,6 +64,7 @@ def shunting(tokenvals):
                     break
             if t1 != RPAREN:
                 stack.append((token, val))
+        i += 1
     while stack:
         t2, (p2, a2) = stack[-1]
         stack.pop()

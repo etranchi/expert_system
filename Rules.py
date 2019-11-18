@@ -66,7 +66,6 @@ class Rules:
             if f.name == name:
                 return f
         fact = Fact(name)
-        print(name)
         self.facts.append(fact)
         return fact
 
@@ -103,7 +102,6 @@ class Rules:
         i = 0
         buff = []
         rpn = list(rpn)
-        print(rpn)
         while i < len(rpn):
             if rpn[i] in Utils.OPERATOR:                
                 left, right = buff.pop(), buff.pop()
