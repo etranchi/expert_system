@@ -9,17 +9,14 @@ from Rules import Rules
 rules = Rules()
 
 def handle_line(line):
-    try:
-        line = line.strip()
-        if line and len(line) > 0:
-            if line[0] == '=':
-                rules.set_initials_facts(line)
-            elif line[0] == '?':
-                rules.set_question(line)
-            else:
-                rules.create_rules(line)
-    except:
-        Utils.end("Erreur parsing.")
+    line = line.strip()
+    if line and len(line) > 0:
+        if line[0] == '=':
+            rules.set_initials_facts(line)
+        elif line[0] == '?':
+            rules.set_question(line)
+        else:
+            rules.create_rules(line)
 
 
 def open_file(path):

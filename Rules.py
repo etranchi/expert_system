@@ -12,24 +12,35 @@ class Rules:
 
     def set_initials_facts(self, string):
         print("Setting facts : " + string)
+        string = string.replace(" ", "")
         for c in string:
-            for f in self.facts:
-                if c == f.name:
-                    f.value = 1
-                    print("Fact set : " + f.name)
+            if c == "=":
+                continue
+            if c.isalpha():
+                f = self.create_fact_if_not_existing(c)
+                f.value = 1
+                print("Fact set : " + f.name)
+            else :
+                Utils.end("Error in initial facts")
 
     def print_all_facts(self):
         for f in self.facts:
             print(str(f.name) + " - " + str(f.value > 0))
 
     def set_question(self, string):
+        string = string.replace(" ", "")
+        for c in string:
+            if c == "?":
+                continue
+            if not c.isalpha():
+                Utils.end("Error in question")
         self.question = string
 
     def print_answer(self):
         for c in self.question:
-            for f in self.facts:
-                if c == f.name :
-                    print(f.name + " : ", f.value > 0)
+            if c != "?":
+                f = self.create_fact_if_not_existing(c)
+                print(f.name + " : " + str(f.value > 0))
 
     def create_rules(self, string):
         # splitting expression : array[0] => array[1]
@@ -46,12 +57,16 @@ class Rules:
         if len(s1) > 5:
             s1 = Parser.shunting(s1).replace(" ", "")
         else :
+            Parser.get_input(s1)
             s1 = s1.replace(" ","")
+        print("coucou",s1)
         s2 = array_string[1].strip().replace("", " ")
         if len(s2) > 5:
             s2 = Parser.shunting(s2).replace(" ", "")
         else:
+            Parser.get_input(s2)
             s2 = s2.replace(" ", "")
+        print("coucou2")
         op = Operation(s1, s2)
         self.operations.append(op)
 

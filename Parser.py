@@ -18,14 +18,22 @@ NUM, LPAREN, RPAREN = 'NUMBER ( )'.split()
 def get_input(inp = None):
     tokens = inp.split()
     tokenvals = []
-    print(tokens)
-    for i, token in enumerate(tokens):
-        tmp = list(tokenvals)
-        if len(tmp) > 0:
-            if token == '!':
-                if tokens[i + 1] in ops:
-                    Utils.end("Error !")
-                    return
+    print("TOKENS ",tokens)
+    excl = 0
+    for t in tokens:
+        if t == "!":
+            if not excl:
+                excl = 1
+            else:
+                Utils.end("Error parsing in line : " + str(inp).replace(" ", ""))
+        elif t.isalpha():
+            excl = 0
+        else:
+            if excl:
+                Utils.end("Error parsing in line : " + str(inp).replace(" ", ""))
+    if excl:
+        Utils.end("Error parsing in line : " + str(inp).replace(" ", ""))
+    for token in tokens:
         if token in ops:
             tokenvals.append((token, ops[token]))
         else:    
@@ -37,7 +45,7 @@ def shunting(tokenvals):
     table = []
     tokenvals = get_input(tokenvals)
     i = 0
-    print("yooo")
+    print(tokenvals)
     for token, val in tokenvals:
         if token is NUM:
             outq.append(val)
@@ -70,4 +78,5 @@ def shunting(tokenvals):
         stack.pop()
         outq.append(t2)
         table.append( (' '.join(outq), ' '.join(s[0] for s in stack)) )
+    print(table)
     return table[-1][0]
