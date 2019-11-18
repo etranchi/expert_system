@@ -24,7 +24,6 @@ def open_file(path):
         file = open(path)
         for line in file:
             handle_line(line)
-        print("I got everything needed.")
         file.close()
     except:
         Utils.end("Give me a real file please.")

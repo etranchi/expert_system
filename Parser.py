@@ -5,8 +5,6 @@ L, R = 'Left Right'.split()
  
 ops = {
  '^': OpInfo(prec=4, assoc=R),
- '*': OpInfo(prec=3, assoc=L),
- '/': OpInfo(prec=3, assoc=L),
  '+': OpInfo(prec=2, assoc=L),
  '|': OpInfo(prec=1, assoc=L),
  '(': OpInfo(prec=9, assoc=L),
@@ -18,26 +16,33 @@ NUM, LPAREN, RPAREN = 'NUMBER ( )'.split()
 def get_input(inp = None):
     tokens = inp.split()
     tokenvals = []
-    print("TOKENS ",tokens)
     excl = 0
+    n_op = 0
+    n_fact = 0
     for t in tokens:
         if t == "!":
             if not excl:
                 excl = 1
             else:
-                Utils.end("Error parsing in line : " + str(inp).replace(" ", ""))
+                raise Exception
         elif t.isalpha():
+            n_fact += 1
             excl = 0
         else:
             if excl:
-                Utils.end("Error parsing in line : " + str(inp).replace(" ", ""))
+                raise Exception
+            elif t not in ops:
+                raise Exception
     if excl:
-        Utils.end("Error parsing in line : " + str(inp).replace(" ", ""))
+        raise Exception
     for token in tokens:
         if token in ops:
+            n_op += 1
             tokenvals.append((token, ops[token]))
-        else:    
+        else:
             tokenvals.append((NUM, token))
+    if not n_fact - 1 == n_op:
+        raise Exception
     return tokenvals
  
 def shunting(tokenvals):
@@ -45,7 +50,6 @@ def shunting(tokenvals):
     table = []
     tokenvals = get_input(tokenvals)
     i = 0
-    print(tokenvals)
     for token, val in tokenvals:
         if token is NUM:
             outq.append(val)
@@ -78,5 +82,4 @@ def shunting(tokenvals):
         stack.pop()
         outq.append(t2)
         table.append( (' '.join(outq), ' '.join(s[0] for s in stack)) )
-    print(table)
     return table[-1][0]

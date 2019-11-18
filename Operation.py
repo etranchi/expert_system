@@ -3,11 +3,12 @@ import Utils
 
 
 class Operation:
-	def __init__(self, lhs = None, rhs = None, done = False):
+	def __init__(self, lhs, rhs, str, done = False):
 		self.left = lhs
 		self.right = rhs
 		self.result = None
 		self.done = done
+		self.str = str
 
 class Fact:
 	def __init__(self, name, value = 0):
