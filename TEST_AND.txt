@@ -1,5 +1,5 @@
 B => A
-D +E =>B
+D+E=>B
 G +H =>F
 I+J=>G
 G=>H

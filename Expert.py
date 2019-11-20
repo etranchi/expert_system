@@ -27,6 +27,8 @@ def open_file(path):
         file.close()
     except:
         Utils.end("Give me a real file please.")
+    if not rules.init_f or not rules.init_q:
+        Utils.end("Something is not set for solving.")
     rules.solve()
     rules.print_answer()
 
