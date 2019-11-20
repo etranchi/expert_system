@@ -101,44 +101,16 @@ class Rules:
                         if c == char:
                             op.done = True
                             buff.append(op)
+        print(buff)
         return buff
 
     def addValueToConclusion(self, op, rec):
         res = op.result 
-        
         ops = self.findOperations(op.right)
-        mul_res = res
-        for c in op.right:
-            if c == "(" or c ==")" or c == "|" or c == "^":
-                Utils.end("Error in conclusion.")
-        if len(ops) > 0:
-            for o in ops:
-                self.checkFactInConclusion(o, 1)
-                mul_res = o.result or mul_res
-            tmp_res = None
-            for c in op.right:
-                if c == "!":
-                    tmp_res = 1 if not mul_res else 0
-                elif c.isalpha():
-                    fact = self.get_fact(c)
-                    fact.value = fact.value or tmp_res if tmp_res != None else mul_res
-                    print("M Fact ", fact.name, " set to ", fact.value, " from rule : ", op.str, op.result)
-                    tmp_res = None
-        else:
-            tmp_res = None
-            for c in op.right:
-                if c == "!":
-                    tmp_res = 1 if not res else 0
-                elif c.isalpha():
-                    fact = self.get_fact(c)
-                    if fact:
-                        if rec:
-                            fact.value = fact.value or tmp_res if tmp_res != None else res
-                        else :
-                            fact.value = tmp_res if tmp_res != None else res
-                        
-                        print("Fact ", fact.name, " set to ", fact.value, " from rule : ", op.str, rec)
-                        tmp_res = None
+        print("OP : RES = ", op.str, op.result)
+
+
+
                     
 
     def perform_rpn(self, op, rpn, rec):
@@ -191,7 +163,7 @@ class Rules:
             else:
                 buff += c
         
-        self.perform_rpn(op, buff, rec)
+        self.perform_rpn(op, buff, 1)
 
     def solve(self):
         for op in self.operations:

@@ -90,7 +90,7 @@ def shunting(tokenvals):
             outq.append(t2)
             table.append( (' '.join(outq), ' '.join(s[0] for s in stack)) )
     else :
-        return str(outq[0])
+        return str(''.join(outq))
     res = table[-1][0]
     for c in res:
         if c == '(' or c == ')':
