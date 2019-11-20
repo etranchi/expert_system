@@ -14,7 +14,6 @@ class Rules:
 
     def set_initials_facts(self, string):
         if self.init_f:
-            print("a")
             raise Exception
         string = string.replace(" ", "")
         if string[0] == "=":
@@ -24,10 +23,8 @@ class Rules:
                     f = self.create_fact_if_not_existing(c)
                     f.value = 1
                 else :
-                    print("a")
                     raise Exception
         else :
-            print("a")
             raise Exception
         self.init_f = 1
 
@@ -37,17 +34,14 @@ class Rules:
 
     def set_question(self, string):
         if self.init_q:
-            print("a")
             raise Exception
         string = string.replace(" ", "")
         if string[0] == "?":
             tmp_str = string[1:]
             for c in tmp_str:
                 if not c.isalpha():
-                    print("a")
                     raise Exception
         else :
-            print("a")
             raise Exception
         self.question = string
         self.init_q = 1
@@ -74,9 +68,7 @@ class Rules:
     def create_operation(self, array_string, string):
         try:
             s1 = Parser.shunting(array_string[0])
-            print("S1:" , s1)
             s2 = Parser.shunting(array_string[1])
-            print("S2:" , s2)
             op = Operation(s1, s2, array_string)
             op.str = string
             
@@ -144,6 +136,7 @@ class Rules:
                             fact.value = fact.value or tmp_res if tmp_res != None else res
                         else :
                             fact.value = tmp_res if tmp_res != None else res
+                        
                         print("Fact ", fact.name, " set to ", fact.value, " from rule : ", op.str, rec)
                         tmp_res = None
                     
@@ -156,7 +149,6 @@ class Rules:
         i = 0
         buff = []
         rpn = list(rpn)
-        print("RPN", rpn)
         while i < len(rpn):
             if rpn[i] in Utils.OPERATOR:                
                 left, right = buff.pop(), buff.pop()
@@ -172,7 +164,7 @@ class Rules:
             else :
                 buff.append(int(rpn[i]))
                 i += 1
-        op.result = buff[0]
+        op.result = buff[-1]
         return self.addValueToConclusion(op, rec)
 
 

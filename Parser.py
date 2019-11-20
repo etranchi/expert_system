@@ -16,10 +16,11 @@ NUM, LPAREN, RPAREN = 'NUMBER ( )'.split()
 def get_input(inp = None):
     inp = inp.replace(" ", "")
     inp = inp.replace("", " ")
+    if inp.count("(") > 1 or inp.count(")") > 1 or not inp.count("(") == inp.count(")"):
+        raise Exception
     while inp[1] == "(" and inp[-2] == ")":
         inp = inp[2:]
         inp = inp[:-2]
-    print(inp)
     tokens = inp.split()
     tokenvals = []
     excl = 0
@@ -90,7 +91,6 @@ def shunting(tokenvals):
             table.append( (' '.join(outq), ' '.join(s[0] for s in stack)) )
     else :
         return str(outq[0])
-    print("TABLE", table[-1][0])
     res = table[-1][0]
     for c in res:
         if c == '(' or c == ')':
