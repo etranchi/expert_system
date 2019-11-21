@@ -4,32 +4,6 @@ J => B
 
 !B => A + C
 
-C => J
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-B => A
-
-J => B
-
-!B => A + C
-!B => A + C
-C => J
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-!B => A + C
-
-
 
 =BC
 

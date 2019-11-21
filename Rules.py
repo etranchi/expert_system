@@ -101,19 +101,34 @@ class Rules:
                         if c == char:
                             op.done = True
                             buff.append(op)
-        print(buff)
         return buff
 
-    def addValueToConclusion(self, op, rec):
-        res = op.result 
+    def addValueToConclusion(self, op):
+        
         ops = self.findOperations(op.right)
-        print("OP : RES = ", op.str, op.result)
+        # !B => !A
+        print("OP : RES = ", op.str, op.result, ops, len(ops))
+        res = op.result
+        for o in ops:
+            self.checkFactInConclusion(o)
+            res = res or o.result
+        for c in op.right:
+            if c == "!":
+                res = 1 if not op.result else 0
+            elif c.isalpha():
+                fact = self.get_fact(c)
+                fact.value = res
+                print("SETTING FACT " + fact.name + " " + str(res) + " " + op.str)
+                op.result = res
+                
+                
+
 
 
 
                     
 
-    def perform_rpn(self, op, rpn, rec):
+    def perform_rpn(self, op, rpn):
         twin = op.left + op.right
         if twin in self.hash:
             return
@@ -121,6 +136,7 @@ class Rules:
         i = 0
         buff = []
         rpn = list(rpn)
+        print(rpn)
         while i < len(rpn):
             if rpn[i] in Utils.OPERATOR:                
                 left, right = buff.pop(), buff.pop()
@@ -136,15 +152,18 @@ class Rules:
             else :
                 buff.append(int(rpn[i]))
                 i += 1
+        print(buff)
         op.result = buff[-1]
-        return self.addValueToConclusion(op, rec)
+        return self.addValueToConclusion(op)
 
 
-    def checkFactInConclusion(self, op, rec):
+    def checkFactInConclusion(self, op):
         inv = 0
         buff = ""
         op.done = True
         res = 0
+
+        print("OP", op.str)
         for c in op.left:
             if c == '!':
                 inv = 1
@@ -152,7 +171,8 @@ class Rules:
                 a_op = self.findOperations(c)
                 for o in a_op:
                    if o:
-                        self.checkFactInConclusion(o, 1)
+                        print("RELATED ", o.str)
+                        self.checkFactInConclusion(o)
                 fact = self.create_fact_if_not_existing(c)
                 if inv == 1:
                     res = 1 if not fact.value else 0
@@ -162,11 +182,10 @@ class Rules:
                     buff += str(fact.value)
             else:
                 buff += c
-        
-        self.perform_rpn(op, buff, 1)
+        self.perform_rpn(op, buff)
 
     def solve(self):
         for op in self.operations:
             if op.done == False:
-                self.checkFactInConclusion(op, 0)
+                self.checkFactInConclusion(op)
 

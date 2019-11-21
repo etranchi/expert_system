@@ -1,5 +1,8 @@
 !B => A
-!B => !A
-B + A => C
+A => C
+C => A
+B => !A
+
+
 =BA
-?ABCD
+?ABC
